@@ -113,7 +113,7 @@ function carregarNovaPalavra() {
     
     // Verificar se ainda há palavras disponíveis
     if (palavrasDisponiveis.length === 0) {
-        mostrarFeedback("Parabéns! Você completou todas as palavras deste nível!", "🎉");
+        mostrarFeedbackNivelCompleto("Parabéns! Você completou todas as palavras deste nível!", "🎉");
         return;
     }
     
@@ -325,7 +325,123 @@ function voltarAoMenu() {
 function mostrarFeedback(mensagem, emoji) {
     feedbackMensagem.textContent = mensagem;
     feedbackImagem.textContent = emoji;
+    feedbackImagem.style.display = 'block';
+    
+    // Esconder a imagem de nível completo e o canvas
+    document.querySelector('#imagem-nivel-completo img').style.display = 'none';
+    document.getElementById('canvas-nivel-completo').style.display = 'none';
+    
     mudarTela(telaFeedback);
+}
+
+function mostrarFeedbackNivelCompleto(mensagem, emoji) {
+    feedbackMensagem.textContent = mensagem;
+    
+    // Obter elementos
+    const imagemNivelCompleto = document.querySelector('#imagem-nivel-completo img');
+    const canvasNivelCompleto = document.getElementById('canvas-nivel-completo');
+    
+    // Esconder o emoji por padrão
+    feedbackImagem.style.display = 'none';
+    
+    // Verificar se a imagem existe e está carregada
+    if (imagemNivelCompleto.complete && imagemNivelCompleto.naturalHeight !== 0) {
+        // A imagem existe e está carregada
+        imagemNivelCompleto.style.display = 'block';
+        canvasNivelCompleto.style.display = 'none';
+    } else {
+        // A imagem não existe ou não carregou
+        imagemNivelCompleto.style.display = 'none';
+        desenharImagemFestiva(canvasNivelCompleto);
+        canvasNivelCompleto.style.display = 'block';
+    }
+    
+    mudarTela(telaFeedback);
+}
+
+function desenharImagemFestiva(canvas) {
+    const ctx = canvas.getContext('2d');
+    const width = canvas.width;
+    const height = canvas.height;
+    
+    // Limpar o canvas
+    ctx.clearRect(0, 0, width, height);
+    
+    // Desenhar fundo com gradiente
+    const gradient = ctx.createRadialGradient(width/2, height/2, 10, width/2, height/2, width/2);
+    gradient.addColorStop(0, '#ffde59');
+    gradient.addColorStop(1, '#ff9f43');
+    ctx.fillStyle = gradient;
+    ctx.fillRect(0, 0, width, height);
+    
+    // Desenhar um troféu
+    ctx.fillStyle = '#ffd700'; // Dourado
+    
+    // Base do troféu
+    ctx.beginPath();
+    ctx.rect(width/2 - 30, height - 40, 60, 15);
+    ctx.fill();
+    
+    // Suporte do troféu
+    ctx.beginPath();
+    ctx.rect(width/2 - 5, height - 60, 10, 20);
+    ctx.fill();
+    
+    // Taça do troféu
+    ctx.beginPath();
+    ctx.moveTo(width/2 - 25, height - 60);
+    ctx.lineTo(width/2 - 35, height - 120);
+    ctx.lineTo(width/2 + 35, height - 120);
+    ctx.lineTo(width/2 + 25, height - 60);
+    ctx.closePath();
+    ctx.fill();
+    
+    // Brilho no troféu
+    ctx.fillStyle = '#ffffff';
+    ctx.globalAlpha = 0.3;
+    ctx.beginPath();
+    ctx.arc(width/2 - 15, height - 100, 8, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.globalAlpha = 1.0;
+    
+    // Desenhar estrelas
+    ctx.fillStyle = '#ffffff';
+    for (let i = 0; i < 20; i++) {
+        const x = Math.random() * width;
+        const y = Math.random() * height;
+        const size = Math.random() * 5 + 2;
+        
+        ctx.beginPath();
+        ctx.arc(x, y, size, 0, Math.PI * 2);
+        ctx.fill();
+    }
+    
+    // Desenhar texto
+    ctx.fillStyle = '#ffffff';
+    ctx.font = 'bold 24px Nunito';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('PARABÉNS!', width/2, 30);
+    
+    // Desenhar confetes
+    const cores = ['#ff6b6b', '#4d96ff', '#66bb6a', '#9c88ff', '#ffa502'];
+    for (let i = 0; i < 50; i++) {
+        const x = Math.random() * width;
+        const y = Math.random() * height;
+        const size = Math.random() * 8 + 3;
+        
+        ctx.fillStyle = cores[Math.floor(Math.random() * cores.length)];
+        ctx.beginPath();
+        
+        // Alternar entre confetes redondos e retangulares
+        if (Math.random() > 0.5) {
+            ctx.arc(x, y, size, 0, Math.PI * 2);
+        } else {
+            ctx.rect(x - size/2, y - size/2, size, size/2);
+        }
+        
+        ctx.fill();
+    }
 }
 
 function fecharFeedback() {
