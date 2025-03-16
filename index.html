@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jogo das Sílabas</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Jogo das Sílabas</h1>
+        </header>
+
+        <div id="tela-inicial" class="tela ativa">
+            <h2>Escolha o nível:</h2>
+            <div class="niveis">
+                <button class="nivel-btn" data-nivel="2">2 Sílabas</button>
+                <button class="nivel-btn" data-nivel="3">3 Sílabas</button>
+                <button class="nivel-btn" data-nivel="4">4 Sílabas</button>
+            </div>
+        </div>
+
+        <div id="tela-jogo" class="tela">
+            <div class="pontuacao">
+                <span id="acertos">Acertos: 0</span>
+                <span id="nivel-atual">Nível: 2 Sílabas</span>
+            </div>
+            
+            <div class="area-jogo">
+                <div class="imagem-container">
+                    <img id="imagem-palavra" src="" alt="Imagem da palavra">
+                </div>
+                
+                <div class="palavra-oculta-container">
+                    <div id="palavra-oculta" class="palavra-oculta">?????</div>
+                    <button id="toggle-palavra" class="toggle-palavra" title="Mostrar/Ocultar palavra">
+                        <i class="fas fa-eye"></i>
+                    </button>
+                </div>
+                
+                <div class="area-resposta" id="area-resposta">
+                    <!-- Aqui serão adicionados os espaços para as sílabas -->
+                </div>
+                
+                <div class="silabas-container" id="silabas-container">
+                    <!-- Aqui serão adicionadas as sílabas embaralhadas -->
+                </div>
+            </div>
+            
+            <div class="controles">
+                <button id="verificar-btn">Verificar</button>
+                <button id="proxima-btn" disabled>Próxima Palavra</button>
+                <button id="voltar-btn">Voltar ao Menu</button>
+            </div>
+        </div>
+
+        <div id="tela-feedback" class="tela">
+            <div id="feedback-mensagem"></div>
+            <div id="feedback-imagem"></div>
+            <button id="continuar-btn">Continuar</button>
+        </div>
+    </div>
+
+    <footer>
+        <p>Jogo Educativo de Sílabas - Desenvolvido para ajudar crianças a aprender</p>
+    </footer>
+
+    <audio id="som-acerto" src="sons/acerto.wav" preload="auto"></audio>
+    <audio id="som-erro" src="sons/erro.wav" preload="auto"></audio>
+
+    <script src="script.js"></script>
+</body>
+</html> 
