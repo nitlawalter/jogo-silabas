@@ -294,6 +294,34 @@ h2 {
     background-color: #e6f4ff;
 }
 
+/* Estilo para sílabas na área de resposta */
+.espaco-silaba .silaba {
+    cursor: pointer;
+    position: relative;
+}
+
+.espaco-silaba .silaba::after {
+    content: '×';
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    width: 18px;
+    height: 18px;
+    background-color: #ff6b6b;
+    color: white;
+    border-radius: 50%;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+
+.espaco-silaba .silaba:hover::after {
+    opacity: 1;
+}
+
 .controles {
     display: flex;
     gap: 12px;
@@ -317,6 +345,16 @@ button {
 
 #verificar-btn:hover {
     background-color: #3a7bd5;
+    transform: translateY(-2px);
+}
+
+#limpar-btn {
+    background-color: #ff9f43;
+    color: white;
+}
+
+#limpar-btn:hover {
+    background-color: #f7941d;
     transform: translateY(-2px);
 }
 

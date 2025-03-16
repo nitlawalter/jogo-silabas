@@ -45,6 +45,7 @@ const togglePalavraBtn = document.getElementById('toggle-palavra');
 const areaResposta = document.getElementById('area-resposta');
 const silabasContainer = document.getElementById('silabas-container');
 const verificarBtn = document.getElementById('verificar-btn');
+const limparBtn = document.getElementById('limpar-btn');
 const proximaBtn = document.getElementById('proxima-btn');
 const voltarBtn = document.getElementById('voltar-btn');
 const acertosSpan = document.getElementById('acertos');
@@ -67,17 +68,38 @@ function iniciarJogo() {
         });
     });
 
+    // Verificar se os botões estão sendo encontrados corretamente
+    console.log("Botão verificar:", verificarBtn);
+    console.log("Botão limpar:", limparBtn);
+    console.log("Botão próxima:", proximaBtn);
+    console.log("Botão voltar:", voltarBtn);
+
     // Event listeners para os botões de controle
-    verificarBtn.addEventListener('click', verificarResposta);
-    proximaBtn.addEventListener('click', proximaPalavra);
-    voltarBtn.addEventListener('click', voltarAoMenu);
-    continuarBtn.addEventListener('click', fecharFeedback);
+    if (verificarBtn) verificarBtn.addEventListener('click', verificarResposta);
+    
+    // Garantir que o botão limpar tenha um event listener
+    if (limparBtn) {
+        console.log("Adicionando event listener ao botão limpar");
+        limparBtn.addEventListener('click', function() {
+            console.log("Botão limpar clicado!");
+            limparAreaResposta();
+        });
+    } else {
+        console.error("Botão limpar não encontrado!");
+    }
+    
+    if (proximaBtn) proximaBtn.addEventListener('click', proximaPalavra);
+    if (voltarBtn) voltarBtn.addEventListener('click', voltarAoMenu);
+    if (continuarBtn) continuarBtn.addEventListener('click', fecharFeedback);
     
     // Event listener para o botão de mostrar/ocultar palavra
-    togglePalavraBtn.addEventListener('click', togglePalavra);
+    if (togglePalavraBtn) togglePalavraBtn.addEventListener('click', togglePalavra);
 
     // Configurar drag and drop
     configurarDragAndDrop();
+    
+    // Configurar clique nas sílabas para removê-las
+    configurarRemocaoSilabas();
 }
 
 function iniciarNivel(nivel) {
@@ -249,6 +271,41 @@ function configurarDragAndDrop() {
             silabasContainer.appendChild(silaba);
             silaba.classList.remove('arrastando');
         }
+    });
+}
+
+function configurarRemocaoSilabas() {
+    console.log("Configurando remoção de sílabas...");
+    
+    // Usar delegação de eventos para capturar cliques nas sílabas
+    areaResposta.addEventListener('click', function(e) {
+        // Verificar se o clique foi em uma sílaba
+        if (e.target.classList.contains('silaba')) {
+            console.log("Clique em sílaba detectado:", e.target.textContent);
+            
+            // Remover a classe 'preenchido' do espaço
+            e.target.parentElement.classList.remove('preenchido');
+            
+            // Mover a sílaba de volta para o container
+            silabasContainer.appendChild(e.target);
+        }
+    });
+}
+
+function limparAreaResposta() {
+    console.log("Limpando área de resposta...");
+    
+    // Obter todas as sílabas na área de resposta
+    const silabas = Array.from(areaResposta.querySelectorAll('.silaba'));
+    console.log("Sílabas encontradas:", silabas.length);
+    
+    // Mover cada sílaba de volta para o container
+    silabas.forEach(silaba => {
+        // Remover a classe 'preenchido' do espaço
+        silaba.parentElement.classList.remove('preenchido');
+        
+        // Mover a sílaba de volta para o container
+        silabasContainer.appendChild(silaba);
     });
 }
 
