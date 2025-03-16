@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Visualização de Favicons</title>
+    <style>
+        body {
+            font-family: 'Nunito', Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f0f9ff;
+            color: #333;
+        }
+        h1 {
+            color: #0362a1;
+            text-align: center;
+        }
+        .favicon-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 30px;
+            margin: 30px 0;
+        }
+        .favicon-option {
+            text-align: center;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        .favicon-option img, .favicon-option svg {
+            width: 64px;
+            height: 64px;
+            margin-bottom: 10px;
+            border: 1px dashed #ccc;
+        }
+        .favicon-option h3 {
+            margin: 10px 0;
+            color: #0362a1;
+        }
+        .instructions {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            margin-top: 30px;
+        }
+        .instructions h2 {
+            color: #0362a1;
+        }
+        .instructions ol {
+            line-height: 1.6;
+        }
+        .instructions code {
+            background: #f0f0f0;
+            padding: 2px 5px;
+            border-radius: 3px;
+        }
+        .download-btn {
+            display: inline-block;
+            background: #4d96ff;
+            color: white;
+            padding: 8px 15px;
+            border-radius: 5px;
+            text-decoration: none;
+            margin-top: 10px;
+            font-weight: bold;
+        }
+        .download-btn:hover {
+            background: #3a7bd5;
+        }
+    </style>
+</head>
+<body>
+    <h1>Favicons para o Jogo das Sílabas</h1>
+    
+    <div class="favicon-container">
+        <div class="favicon-option">
+            <h3>Opção 1: Texto</h3>
+            <object data="favicon.svg" type="image/svg+xml" width="64" height="64"></object>
+            <p>Favicon com texto "SI" e sílabas ao redor</p>
+            <a href="favicon.svg" download class="download-btn">Baixar SVG</a>
+        </div>
+        
+        <div class="favicon-option">
+            <h3>Opção 2: Quebra-cabeça</h3>
+            <object data="favicon-alt.svg" type="image/svg+xml" width="64" height="64"></object>
+            <p>Favicon com peças de quebra-cabeça</p>
+            <a href="favicon-alt.svg" download class="download-btn">Baixar SVG</a>
+        </div>
+        
+        <div class="favicon-option">
+            <h3>Opção 3: Cartões</h3>
+            <object data="favicon-final.svg" type="image/svg+xml" width="64" height="64"></object>
+            <p>Favicon com cartões de sílabas</p>
+            <a href="favicon-final.svg" download class="download-btn">Baixar SVG</a>
+        </div>
+    </div>
+    
+    <div class="instructions">
+        <h2>Como converter SVG para ICO</h2>
+        <p>Para usar o favicon no seu site, você precisa convertê-lo para o formato ICO. Aqui estão algumas opções:</p>
+        
+        <ol>
+            <li>
+                <strong>Usando um conversor online:</strong>
+                <ul>
+                    <li><a href="https://convertio.co/svg-ico/" target="_blank">Convertio</a></li>
+                    <li><a href="https://cloudconvert.com/svg-to-ico" target="_blank">CloudConvert</a></li>
+                    <li><a href="https://favicon.io/favicon-converter/" target="_blank">Favicon.io</a></li>
+                </ul>
+            </li>
+            <li>
+                <strong>Usando o ImageMagick (linha de comando):</strong>
+                <code>convert -background transparent favicon.svg -define icon:auto-resize=16,32,48,64 favicon.ico</code>
+            </li>
+        </ol>
+        
+        <h3>Instruções para uso:</h3>
+        <ol>
+            <li>Escolha um dos designs acima e baixe o arquivo SVG</li>
+            <li>Converta o SVG para ICO usando um dos métodos acima</li>
+            <li>Salve o arquivo ICO como <code>favicon.ico</code> na pasta <code>imagens</code> do seu projeto</li>
+            <li>O link para o favicon já está incluído no seu HTML: <code>&lt;link rel="icon" href="imagens/favicon.ico" type="image/x-icon"&gt;</code></li>
+        </ol>
+    </div>
+</body>
+</html> 

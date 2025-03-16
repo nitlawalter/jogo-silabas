@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64">
+  <!-- Fundo circular -->
+  <circle cx="32" cy="32" r="30" fill="#0362a1" />
+  
+  <!-- Borda do círculo -->
+  <circle cx="32" cy="32" r="28" fill="none" stroke="#ffffff" stroke-width="2" />
+  
+  <!-- Cartões de sílabas -->
+  <g>
+    <!-- Cartão 1: "SI" -->
+    <rect x="18" y="20" width="16" height="22" rx="2" ry="2" fill="#ffde59" stroke="#ff6b6b" stroke-width="1.5" transform="rotate(-10, 18, 20)" />
+    
+    <!-- Cartão 2: "LA" -->
+    <rect x="30" y="22" width="16" height="22" rx="2" ry="2" fill="#66bb6a" stroke="#ff6b6b" stroke-width="1.5" transform="rotate(10, 46, 22)" />
+    
+    <!-- Letras estilizadas nos cartões -->
+    <g font-family="Arial, sans-serif" font-weight="bold" fill="#333333">
+      <!-- Letra "S" no primeiro cartão -->
+      <path d="M24,30 C24,28 26,28 26,29 C26,30 22,31 22,33 C22,35 26,35 26,33" stroke="#333333" stroke-width="2" fill="none" />
+      
+      <!-- Letra "I" no primeiro cartão -->
+      <path d="M28,27 L28,33" stroke="#333333" stroke-width="2" fill="none" />
+      
+      <!-- Letra "L" no segundo cartão -->
+      <path d="M36,27 L36,33 L39,33" stroke="#333333" stroke-width="2" fill="none" />
+      
+      <!-- Letra "A" no segundo cartão -->
+      <path d="M41,33 L43,27 L45,33 M41.5,31 L44.5,31" stroke="#333333" stroke-width="2" fill="none" />
+    </g>
+  </g>
+  
+  <!-- Pequenas estrelas decorativas -->
+  <g fill="#ffffff">
+    <circle cx="15" cy="15" r="1.5" />
+    <circle cx="49" cy="15" r="1.5" />
+    <circle cx="15" cy="49" r="1.5" />
+    <circle cx="49" cy="49" r="1.5" />
+    <circle cx="32" cy="12" r="1.5" />
+    <circle cx="32" cy="52" r="1.5" />
+    <circle cx="12" cy="32" r="1.5" />
+    <circle cx="52" cy="32" r="1.5" />
+  </g>
+</svg> 
