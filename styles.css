@@ -1,12 +1,12 @@
 * {
     margin: 0;
     padding: 0;
-    box-sizing: border-box;
+    box-sizing: border-box;    
 }
 
 body {
     font-family: 'Nunito', sans-serif;
-    background-color: #f0f9ff;
+    background-color: #0362a1;
     color: #333;
     min-height: 100vh;
     display: flex;
@@ -21,6 +21,7 @@ body {
     flex: 1;
     display: flex;
     flex-direction: column;
+    background-color: #0362a1;
 }
 
 header {
