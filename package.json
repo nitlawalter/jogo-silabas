@@ -2,14 +2,14 @@
   "name": "jogo-silabas",
   "version": "1.0.0",
   "description": "Jogo educativo de sílabas com sistema de assinatura",
-  "main": "server.js",
   "scripts": {
-    "start": "node server.js"
+    "dev": "vercel dev",
+    "deploy": "vercel --prod"
   },
   "dependencies": {
-    "express": "^4.18.2",
-    "stripe": "^14.17.0",
-    "cors": "^2.8.5",
-    "dotenv": "^16.4.1"
+    "stripe": "^14.17.0"
+  },
+  "devDependencies": {
+    "vercel": "^33.5.1"
   }
 } 

@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pagamento Confirmado - Jogo de Sílabas</title>
     <link rel="stylesheet" href="styles.css">
+    <script src="https://js.stripe.com/v3/"></script>
     <script src="stripe-config.js"></script>
 </head>
 <body>
@@ -20,16 +21,9 @@
     </div>
 
     <script>
-        // Verificar o status da sessão
-        const urlParams = new URLSearchParams(window.location.search);
-        const sessionId = urlParams.get('session_id');
-        
-        if (sessionId) {
-            verificarStatusAssinatura(sessionId).then(pago => {
-                if (!pago) {
-                    window.location.href = 'cancelado.html';
-                }
-            });
+        // Verificar se chegamos aqui através de um checkout bem-sucedido
+        if (!verificarStatusAssinatura()) {
+            window.location.href = 'assinatura.html';
         }
     </script>
 </body>

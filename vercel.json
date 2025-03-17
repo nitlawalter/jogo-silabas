@@ -1,0 +1,27 @@
+{
+    "version": 2,
+    "builds": [
+        { "src": "api/*.js", "use": "@vercel/node" },
+        { "src": "*.html", "use": "@vercel/static" },
+        { "src": "*.css", "use": "@vercel/static" },
+        { "src": "*.js", "use": "@vercel/static" },
+        { "src": "imagens/*", "use": "@vercel/static" }
+    ],
+    "routes": [
+        {
+            "src": "/api/checkout",
+            "methods": ["POST", "OPTIONS"],
+            "dest": "/api/checkout.js"
+        },
+        {
+            "src": "/api/check-session",
+            "methods": ["GET", "OPTIONS"],
+            "dest": "/api/check-session.js"
+        },
+        { "src": "/", "dest": "/index.html" },
+        { "src": "/assinatura", "dest": "/assinatura.html" },
+        { "src": "/sucesso", "dest": "/sucesso.html" },
+        { "src": "/cancelado", "dest": "/cancelado.html" },
+        { "src": "/(.*)", "dest": "/$1" }
+    ]
+} 
