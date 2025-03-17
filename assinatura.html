@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Assinatura - Jogo de Sílabas</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://js.stripe.com/v3/"></script>
+    <script src="stripe-config.js"></script>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Assinatura Premium</h1>
+            <p>Desbloqueie todos os recursos do jogo!</p>
+        </header>
+
+        <div class="planos-container">
+            <div class="plano">
+                <h2>Plano Mensal</h2>
+                <div class="preco">R$ 9,90<span>/mês</span></div>
+                <ul class="beneficios">
+                    <li>✓ Acesso a todos os níveis</li>
+                    <li>✓ Palavras extras</li>
+                    <li>✓ Modo offline</li>
+                    <li>✓ Sem anúncios</li>
+                </ul>
+                <button onclick="iniciarCheckout('price_1R3cs0RxVP7yohx4dTpdtcDB')" class="btn-assinar">
+                    Assinar Agora
+                </button>
+            </div>
+
+            <div class="plano destaque">
+                <h2>Plano Anual</h2>
+                <div class="preco">R$ 89,90<span>/ano</span></div>
+                <div class="economia">Economize 25%</div>
+                <ul class="beneficios">
+                    <li>✓ Acesso a todos os níveis</li>
+                    <li>✓ Palavras extras</li>
+                    <li>✓ Modo offline</li>
+                    <li>✓ Sem anúncios</li>
+                </ul>
+                <button onclick="iniciarCheckout('price_seu_id_do_plano_anual')" class="btn-assinar">
+                    Assinar Agora
+                </button>
+            </div>
+        </div>
+
+        <div class="garantia">
+            <p>7 dias de garantia de reembolso</p>
+            <p>Cancelamento a qualquer momento</p>
+        </div>
+    </div>
+</body>
+</html> 
