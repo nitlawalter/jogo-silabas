@@ -6,25 +6,92 @@
     <title>Pagamento Confirmado - Jogo de Sílabas</title>
     <link rel="stylesheet" href="styles.css">
     <script src="https://js.stripe.com/v3/"></script>
-    <script src="stripe-config.js"></script>
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
 </head>
 <body>
     <div class="container">
         <div class="mensagem-sucesso">
-            <h1>🎉 Pagamento Confirmado!</h1>
-            <p>Obrigado por assinar o Jogo de Sílabas Premium!</p>
-            <p>Sua assinatura foi ativada com sucesso.</p>
-            <button onclick="window.location.href='index.html'" class="btn-voltar">
-                Voltar ao Jogo
-            </button>
+            <h1>🎉 Processando seu Pagamento</h1>
+            <p>Estamos confirmando sua assinatura...</p>
+            <div id="loading" class="loading-spinner"></div>
         </div>
     </div>
 
     <script>
+        // Inicializar Supabase
+        const supabase = window.supabase.createClient(
+            'https://mxiwsqzusurawdifjrmb.supabase.co',
+            'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im14aXdzcXp1c3VyYXdkaWZqcm1iIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDIyNDIzMTcsImV4cCI6MjA1NzgxODMxN30.GzwM3674qEbhofC6lEJPbWOxFGFVeofRwQkeE7QgD34'
+        );
+
+        async function atualizarAssinatura() {
+            try {
+                // Verificar se temos uma sessão válida
+                const { data: { session } } = await supabase.auth.getSession();
+                if (!session) {
+                    window.location.href = 'index.html';
+                    return;
+                }
+
+                // Atualizar status da assinatura
+                const { error } = await supabase
+                    .from('usuarios')
+                    .update({ 
+                        is_subscribed: true,
+                        updated_at: new Date().toISOString()
+                    })
+                    .eq('id', session.user.id);
+
+                if (error) {
+                    throw error;
+                }
+
+                // Atualizar mensagem de sucesso
+                document.querySelector('h1').textContent = '🎉 Pagamento Confirmado!';
+                document.querySelector('p').textContent = 'Sua assinatura Premium foi ativada com sucesso!';
+                document.querySelector('#loading').style.display = 'none';
+
+                // Adicionar botão de voltar
+                const button = document.createElement('button');
+                button.className = 'btn-voltar';
+                button.textContent = 'Voltar ao Jogo';
+                button.onclick = () => window.location.href = 'jogo.html';
+                document.querySelector('.mensagem-sucesso').appendChild(button);
+
+            } catch (error) {
+                console.error('Erro:', error);
+                document.querySelector('h1').textContent = '❌ Ops! Algo deu errado';
+                document.querySelector('p').textContent = 'Por favor, entre em contato com o suporte.';
+                document.querySelector('#loading').style.display = 'none';
+            }
+        }
+
         // Verificar se chegamos aqui através de um checkout bem-sucedido
-        if (!verificarStatusAssinatura()) {
+        const urlParams = new URLSearchParams(window.location.search);
+        const sessionId = urlParams.get('session_id');
+        
+        if (!sessionId) {
             window.location.href = 'assinatura.html';
+        } else {
+            atualizarAssinatura();
         }
     </script>
+
+    <style>
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid #3498db;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
 </body>
 </html> 

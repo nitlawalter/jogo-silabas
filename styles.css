@@ -799,4 +799,104 @@ button:disabled {
     .user-info {
         margin-top: 0.5rem;
     }
+}
+
+.plano-badge {
+    background: linear-gradient(135deg, #6c5ce7, #a363d9);
+    color: white;
+    padding: 0.3rem 0.8rem;
+    border-radius: 15px;
+    font-size: 0.9rem;
+    margin: 0 1rem;
+}
+
+.plano-badge.premium {
+    background: linear-gradient(135deg, #f1c40f, #e67e22);
+    animation: shine 2s infinite;
+}
+
+@keyframes shine {
+    0% { opacity: 1; }
+    50% { opacity: 0.8; }
+    100% { opacity: 1; }
+}
+
+.banner-upgrade {
+    background: linear-gradient(135deg, #6c5ce7, #a363d9);
+    color: white;
+    padding: 0.5rem;
+    margin-bottom: 1rem;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.banner-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.5rem;
+    position: relative;
+}
+
+.banner-text {
+    flex: 1;
+}
+
+.banner-text strong {
+    font-size: 1.1rem;
+    display: block;
+    margin-bottom: 0.2rem;
+}
+
+.banner-text p {
+    margin: 0;
+    font-size: 0.9rem;
+    opacity: 0.9;
+}
+
+.btn-upgrade {
+    background: #4cd137;
+    color: white;
+    padding: 0.5rem 1.5rem;
+    border-radius: 20px;
+    text-decoration: none;
+    font-weight: bold;
+    margin-left: 1rem;
+    transition: transform 0.3s, background 0.3s;
+}
+
+.btn-upgrade:hover {
+    background: #44bd32;
+    transform: translateY(-2px);
+}
+
+.btn-fechar {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 1.5rem;
+    cursor: pointer;
+    padding: 0 0.5rem;
+    opacity: 0.7;
+    transition: opacity 0.3s;
+}
+
+.btn-fechar:hover {
+    opacity: 1;
+}
+
+@media (max-width: 768px) {
+    .banner-content {
+        flex-direction: column;
+        text-align: center;
+        gap: 1rem;
+    }
+
+    .btn-upgrade {
+        margin: 0.5rem 0;
+    }
+
+    .plano-badge {
+        margin: 0.5rem 0;
+    }
 } 

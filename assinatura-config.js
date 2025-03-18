@@ -4,9 +4,9 @@ const NIVEL_CONFIG = {
         nome: 'Gratuito',
         maxNivel: 2,
         maxPalavrasPorNivel: 5,
-        temSom: false,
-        temAnimacoes: false,
-        temDicas: false
+        temSom: true,
+        temAnimacoes: true,
+        temDicas: true
     },
     PREMIUM: {
         nome: 'Premium',
@@ -83,11 +83,27 @@ function mostrarModalUpgrade() {
 
 // Função para atualizar interface baseado no nível
 function atualizarInterface(nivelConfig) {
+    // Atualiza badge do plano
+    const planoBadge = document.getElementById('plano-badge');
+    if (planoBadge) {
+        planoBadge.textContent = `Plano: ${nivelConfig.nome}`;
+        planoBadge.className = `plano-badge ${nivelConfig.nome === 'Premium' ? 'premium' : ''}`;
+    }
+
+    // Mostra/esconde banner de upgrade
+    const bannerUpgrade = document.getElementById('banner-upgrade');
+    if (bannerUpgrade) {
+        bannerUpgrade.style.display = nivelConfig.nome === 'Gratuito' ? 'block' : 'none';
+    }
+
     // Atualiza botões de som
     const botaoSom = document.getElementById('botao-som');
     if (botaoSom) {
         botaoSom.disabled = !nivelConfig.temSom;
         botaoSom.title = nivelConfig.temSom ? 'Ativar/Desativar Som' : 'Recurso Premium';
+        if (!nivelConfig.temSom) {
+            botaoSom.innerHTML = '🔒';
+        }
     }
 
     // Atualiza botões de dica
@@ -95,6 +111,9 @@ function atualizarInterface(nivelConfig) {
     if (botaoDica) {
         botaoDica.disabled = !nivelConfig.temDicas;
         botaoDica.title = nivelConfig.temDicas ? 'Mostrar Dica' : 'Recurso Premium';
+        if (!nivelConfig.temDicas) {
+            botaoDica.innerHTML = '🔒';
+        }
     }
 
     // Atualiza indicador de nível
@@ -102,6 +121,17 @@ function atualizarInterface(nivelConfig) {
     if (nivelAtual > nivelConfig.maxNivel) {
         mostrarModalUpgrade();
     }
+
+    // Atualiza botões de nível
+    const niveisBtns = document.querySelectorAll('.nivel-btn');
+    niveisBtns.forEach(btn => {
+        const nivel = parseInt(btn.getAttribute('data-nivel'));
+        if (nivel > nivelConfig.maxNivel) {
+            btn.disabled = true;
+            btn.innerHTML += ' 🔒';
+            btn.title = 'Disponível apenas no plano Premium';
+        }
+    });
 }
 
 // Inicialização
