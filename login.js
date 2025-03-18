@@ -112,29 +112,41 @@ function mostrarModalCriarConta() {
             <h2 style="color: #333; text-align: center; margin-bottom: 2rem;">
                 Criar Nova Conta
             </h2>
-            <div class="form-group">
-                <label for="novo-email">Email</label>
-                <input type="email" id="novo-email" placeholder="Seu email">
+            <div class="form-group" style="text-align: left; margin-bottom: 1rem;">
+                <label for="novo-email" style="display: block; margin-bottom: 0.5rem; color: #666;">Email</label>
+                <input type="email" id="novo-email" placeholder="Seu email" style="width: 100%; padding: 0.8rem; border: 1px solid #ddd; border-radius: 8px;">
             </div>
-            <div class="form-group">
-                <label for="nova-senha">Senha</label>
-                <input type="password" id="nova-senha" placeholder="Sua senha">
+            <div class="form-group" style="text-align: left; margin-bottom: 1rem;">
+                <label for="confirmar-email" style="display: block; margin-bottom: 0.5rem; color: #666;">Confirmar Email</label>
+                <input type="email" id="confirmar-email" placeholder="Confirme seu email" style="width: 100%; padding: 0.8rem; border: 1px solid #ddd; border-radius: 8px;">
             </div>
-            <button class="login-button" onclick="confirmarCriarConta()">
-                Criar Conta
-            </button>
-            <button style="
-                background: #f0f0f0;
-                color: #666;
-                margin-top: 1rem;
+            <div class="form-group" style="text-align: left; margin-bottom: 1rem;">
+                <label for="nova-senha" style="display: block; margin-bottom: 0.5rem; color: #666;">Senha</label>
+                <input type="password" id="nova-senha" placeholder="Sua senha" style="width: 100%; padding: 0.8rem; border: 1px solid #ddd; border-radius: 8px;">
+            </div>
+            <div class="form-group" style="text-align: left; margin-bottom: 1.5rem;">
+                <label for="confirmar-senha" style="display: block; margin-bottom: 0.5rem; color: #666;">Confirmar Senha</label>
+                <input type="password" id="confirmar-senha" placeholder="Confirme sua senha" style="width: 100%; padding: 0.8rem; border: 1px solid #ddd; border-radius: 8px;">
+            </div>
+            <button class="login-button" onclick="confirmarCriarConta()" style="
+                background: #6c5ce7;
+                color: white;
                 width: 100%;
                 padding: 1rem;
                 border: none;
                 border-radius: 8px;
                 cursor: pointer;
-            " onclick="this.parentElement.parentElement.remove()">
-                Cancelar
-            </button>
+                margin-bottom: 1rem;
+            ">Criar Conta</button>
+            <button style="
+                background: #f0f0f0;
+                color: #666;
+                width: 100%;
+                padding: 1rem;
+                border: none;
+                border-radius: 8px;
+                cursor: pointer;
+            " onclick="this.parentElement.parentElement.remove()">Cancelar</button>
         </div>
     `;
     modal.style.cssText = `
@@ -154,7 +166,41 @@ function mostrarModalCriarConta() {
 
 function confirmarCriarConta() {
     const email = document.getElementById('novo-email').value;
+    const confirmarEmail = document.getElementById('confirmar-email').value;
     const senha = document.getElementById('nova-senha').value;
+    const confirmarSenha = document.getElementById('confirmar-senha').value;
+
+    // Validar se todos os campos estão preenchidos
+    if (!email || !confirmarEmail || !senha || !confirmarSenha) {
+        mostrarErro('Por favor, preencha todos os campos');
+        return;
+    }
+
+    // Validar se os emails coincidem
+    if (email !== confirmarEmail) {
+        mostrarErro('Os emails não coincidem');
+        return;
+    }
+
+    // Validar formato do email
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+        mostrarErro('Por favor, insira um email válido');
+        return;
+    }
+
+    // Validar se as senhas coincidem
+    if (senha !== confirmarSenha) {
+        mostrarErro('As senhas não coincidem');
+        return;
+    }
+
+    // Validar força da senha
+    if (senha.length < 6) {
+        mostrarErro('A senha deve ter pelo menos 6 caracteres');
+        return;
+    }
+
     criarConta(email, senha);
 }
 
