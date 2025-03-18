@@ -100,9 +100,14 @@ function atualizarInterface(nivelConfig) {
     const botaoSom = document.getElementById('botao-som');
     if (botaoSom) {
         botaoSom.disabled = !nivelConfig.temSom;
-        botaoSom.title = nivelConfig.temSom ? 'Ativar/Desativar Som' : 'Recurso Premium';
         if (!nivelConfig.temSom) {
             botaoSom.innerHTML = '🔒';
+            botaoSom.title = 'Recurso Premium';
+        } else {
+            // Mantém o estado atual do som
+            const somAtivo = estadoJogo.somAtivo;
+            botaoSom.textContent = somAtivo ? '🔊' : '🔇';
+            botaoSom.title = somAtivo ? 'Desativar Som' : 'Ativar Som';
         }
     }
 

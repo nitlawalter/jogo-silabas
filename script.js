@@ -31,7 +31,13 @@ let estadoJogo = {
     acertos: 0,
     palavrasJogadas: [],
     silabaArrastando: null,
-    palavraRevelada: false
+    palavraRevelada: false,
+    somAtivo: true,
+    audioContext: null,
+    buffers: {
+        acerto: null,
+        erro: null
+    }
 };
 
 // Elementos do DOM
@@ -55,9 +61,49 @@ const feedbackImagem = document.getElementById('feedback-imagem');
 const continuarBtn = document.getElementById('continuar-btn');
 const somAcerto = document.getElementById('som-acerto');
 const somErro = document.getElementById('som-erro');
+const botaoSom = document.getElementById('botao-som');
 
 // Inicialização
 document.addEventListener('DOMContentLoaded', iniciarJogo);
+
+// Garantir que os sons sejam carregados
+window.addEventListener('load', () => {
+    console.log('Página carregada, verificando sons...');
+    
+    // Carregar sons
+    const sons = [somAcerto, somErro];
+    sons.forEach(som => {
+        if (som) {
+            console.log(`Verificando som ${som.id}:`, {
+                readyState: som.readyState,
+                src: som.src,
+                error: som.error
+            });
+            
+            // Forçar carregamento do som
+            som.load();
+            
+            // Adicionar listeners para debug
+            som.addEventListener('canplaythrough', () => {
+                console.log(`Som ${som.id} carregado e pronto para reprodução`);
+            });
+            
+            som.addEventListener('error', (e) => {
+                console.error(`Erro ao carregar som ${som.id}:`, e);
+            });
+            
+            som.addEventListener('play', () => {
+                console.log(`Som ${som.id} começou a tocar`);
+            });
+            
+            som.addEventListener('ended', () => {
+                console.log(`Som ${som.id} terminou de tocar`);
+            });
+        } else {
+            console.error(`Elemento de som não encontrado`);
+        }
+    });
+});
 
 function iniciarJogo() {
     // Adicionar event listeners aos botões de nível
@@ -73,6 +119,7 @@ function iniciarJogo() {
     console.log("Botão limpar:", limparBtn);
     console.log("Botão próxima:", proximaBtn);
     console.log("Botão voltar:", voltarBtn);
+    console.log("Botão som:", botaoSom);
 
     // Event listeners para os botões de controle
     if (verificarBtn) verificarBtn.addEventListener('click', verificarResposta);
@@ -95,11 +142,31 @@ function iniciarJogo() {
     // Event listener para o botão de mostrar/ocultar palavra
     if (togglePalavraBtn) togglePalavraBtn.addEventListener('click', togglePalavra);
 
+    // Event listener para o botão de som
+    if (botaoSom) {
+        botaoSom.addEventListener('click', toggleSom);
+        atualizarBotaoSom();
+        
+        // Adicionar evento de clique duplo para testar os sons
+        botaoSom.addEventListener('dblclick', () => {
+            console.log('Testando sons...');
+            tocarSom(somAcerto);
+            setTimeout(() => tocarSom(somErro), 1000);
+        });
+    }
+
     // Configurar drag and drop
     configurarDragAndDrop();
     
     // Configurar clique nas sílabas para removê-las
     configurarRemocaoSilabas();
+
+    // Inicializar áudio quando o usuário interagir
+    document.body.addEventListener('click', () => {
+        if (!estadoJogo.audioContext) {
+            inicializarAudio();
+        }
+    }, { once: true });
 }
 
 function iniciarNivel(nivel) {
@@ -310,57 +377,37 @@ function limparAreaResposta() {
 }
 
 function verificarResposta() {
-    // Verificar se todos os espaços estão preenchidos
     const espacos = document.querySelectorAll('.espaco-silaba');
-    const todosPreenchidos = Array.from(espacos).every(espaco => espaco.hasChildNodes());
+    const respostaUsuario = Array.from(espacos)
+        .map(espaco => espaco.firstChild?.textContent || '')
+        .join('');
     
-    if (!todosPreenchidos) {
-        mostrarFeedback("Complete todas as sílabas antes de verificar!", "🤔");
-        return;
-    }
-    
-    // Obter a sequência de sílabas colocada pelo jogador
-    const sequenciaJogador = Array.from(espacos).map(
-        espaco => espaco.firstChild.textContent
-    );
-    
-    // Verificar se a sequência está correta
-    const sequenciaCorreta = estadoJogo.palavraAtual.silabas;
-    const respostaCorreta = sequenciaJogador.every(
-        (silaba, index) => silaba === sequenciaCorreta[index]
-    );
+    const respostaCorreta = respostaUsuario === estadoJogo.palavraAtual.palavra;
     
     if (respostaCorreta) {
-        // Atualizar acertos
         estadoJogo.acertos++;
         acertosSpan.textContent = `Acertos: ${estadoJogo.acertos}`;
         
         // Tocar som de acerto
-        somAcerto.play();
+        tocarSom('acerto');
         
-        // Animar sílabas
         espacos.forEach(espaco => {
             espaco.firstChild.classList.add('animacao-acerto');
         });
         
-        // Revelar a palavra
         estadoJogo.palavraRevelada = true;
         atualizarVisualizacaoPalavra();
         
-        // Mostrar feedback positivo
         mostrarFeedback("Muito bem! Você acertou!", "🎉");
         
-        // Habilitar botão próxima
         proximaBtn.disabled = false;
         proximaBtn.focus();
     } else {
         // Tocar som de erro
-        somErro.play();
+        tocarSom('erro');
         
-        // Mostrar feedback negativo
         mostrarFeedback("Ops! Tente novamente!", "😕");
         
-        // Devolver sílabas para o container
         Array.from(espacos).forEach(espaco => {
             if (espaco.firstChild) {
                 const silaba = espaco.firstChild;
@@ -522,4 +569,89 @@ function embaralharArray(array) {
         [array[i], array[j]] = [array[j], array[i]];
     }
     return array;
+}
+
+function toggleSom() {
+    estadoJogo.somAtivo = !estadoJogo.somAtivo;
+    atualizarBotaoSom();
+}
+
+function atualizarBotaoSom() {
+    if (botaoSom) {
+        botaoSom.textContent = estadoJogo.somAtivo ? '🔊' : '🔇';
+        botaoSom.title = estadoJogo.somAtivo ? 'Desativar Som' : 'Ativar Som';
+    }
+}
+
+function tocarSom(tipo) {
+    if (!estadoJogo.somAtivo) {
+        console.log('Som desativado, ignorando reprodução');
+        return;
+    }
+
+    // Se o contexto de áudio ainda não foi inicializado, inicialize-o
+    if (!estadoJogo.audioContext) {
+        inicializarAudio().then(() => {
+            const buffer = tipo === 'acerto' ? estadoJogo.buffers.acerto : estadoJogo.buffers.erro;
+            tocarBuffer(buffer);
+        });
+        return;
+    }
+
+    // Se o contexto já existe, toque o som diretamente
+    const buffer = tipo === 'acerto' ? estadoJogo.buffers.acerto : estadoJogo.buffers.erro;
+    tocarBuffer(buffer);
+}
+
+// Função para inicializar o contexto de áudio
+async function inicializarAudio() {
+    try {
+        // Criar contexto de áudio
+        estadoJogo.audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        
+        // Carregar os sons
+        const [acertoBuffer, erroBuffer] = await Promise.all([
+            carregarSom('sons/acerto.wav'),
+            carregarSom('sons/erro.wav')
+        ]);
+        
+        estadoJogo.buffers.acerto = acertoBuffer;
+        estadoJogo.buffers.erro = erroBuffer;
+        
+        console.log('Sons carregados com sucesso!');
+    } catch (error) {
+        console.error('Erro ao inicializar áudio:', error);
+    }
+}
+
+// Função para carregar um arquivo de som
+async function carregarSom(url) {
+    try {
+        const response = await fetch(url);
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const arrayBuffer = await response.arrayBuffer();
+        const audioBuffer = await estadoJogo.audioContext.decodeAudioData(arrayBuffer);
+        return audioBuffer;
+    } catch (error) {
+        console.error(`Erro ao carregar som ${url}:`, error);
+        return null;
+    }
+}
+
+// Função para tocar um buffer de som
+function tocarBuffer(buffer) {
+    if (!estadoJogo.somAtivo || !estadoJogo.audioContext || !buffer) {
+        return;
+    }
+
+    try {
+        const source = estadoJogo.audioContext.createBufferSource();
+        source.buffer = buffer;
+        source.connect(estadoJogo.audioContext.destination);
+        source.start(0);
+    } catch (error) {
+        console.error('Erro ao tocar som:', error);
+    }
 } 
