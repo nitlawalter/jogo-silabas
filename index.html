@@ -3,246 +3,204 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - Jogo das Sílabas</title>
+    <title>Jogo das Sílabas - Login</title>
+    <link rel="stylesheet" href="styles.css">
     <style>
-        body {
-            margin: 0;
-            padding: 0;
-            font-family: Arial, sans-serif;
-            background: linear-gradient(135deg, #6c5ce7, #a363d9);
+        .login-container {
+            display: flex;
             min-height: 100vh;
+            background: linear-gradient(135deg, #6c5ce7, #a363d9);
+        }
+
+        .login-info {
+            flex: 1;
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            text-align: center;
+        }
+
+        .login-info h2 {
+            font-size: 2.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .login-info p {
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+            max-width: 600px;
+        }
+
+        .features-list {
+            list-style: none;
+            padding: 0;
+            margin: 2rem 0;
+            text-align: left;
+        }
+
+        .features-list li {
+            margin: 1rem 0;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+        }
+
+        .features-list li::before {
+            content: "✓";
+            margin-right: 10px;
+            color: #4cd137;
+            font-weight: bold;
+        }
+
+        .mascot-image {
+            width: 600px;
+            height: 200px;
+            margin: 2rem 0;
+            border-radius: 10%;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .login-form-container {
+            flex: 1;
+            padding: 2rem;
             display: flex;
             justify-content: center;
             align-items: center;
         }
 
-        .login-container {
+        .login-form {
             background: white;
             padding: 2rem;
-            border-radius: 15px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-            width: 90%;
+            border-radius: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            width: 100%;
             max-width: 400px;
-            text-align: center;
         }
 
-        h1 {
-            color: #2c3e50;
+        .login-form h1 {
+            color: #333;
+            text-align: center;
             margin-bottom: 2rem;
+            font-size: 2rem;
         }
 
         .form-group {
             margin-bottom: 1.5rem;
-            text-align: left;
         }
 
-        label {
+        .form-group label {
             display: block;
             margin-bottom: 0.5rem;
-            color: #2c3e50;
+            color: #666;
+            font-size: 1rem;
         }
 
-        input {
+        .form-group input {
             width: 100%;
             padding: 0.8rem;
-            border: 2px solid #e0e0e0;
+            border: 2px solid #ddd;
             border-radius: 8px;
             font-size: 1rem;
-            transition: border-color 0.3s ease;
+            transition: border-color 0.3s;
         }
 
-        input:focus {
+        .form-group input:focus {
             border-color: #6c5ce7;
             outline: none;
         }
 
-        button {
+        .login-button {
             width: 100%;
             padding: 1rem;
-            border: none;
-            border-radius: 8px;
-            font-size: 1rem;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            margin-bottom: 1rem;
-        }
-
-        .btn-primary {
             background: linear-gradient(135deg, #6c5ce7, #a363d9);
             color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: transform 0.3s;
         }
 
-        .btn-secondary {
-            background: #f0f0f0;
+        .login-button:hover {
+            transform: translateY(-2px);
+        }
+
+        .create-account {
+            text-align: center;
+            margin-top: 1.5rem;
             color: #666;
         }
 
-        button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        .create-account a {
+            color: #6c5ce7;
+            text-decoration: none;
+            font-weight: bold;
         }
 
-        .error-message {
-            color: #e74c3c;
-            margin-top: 1rem;
-            display: none;
+        .create-account a:hover {
+            text-decoration: underline;
         }
 
-        .loading {
-            display: none;
-            margin-top: 1rem;
-        }
+        @media (max-width: 768px) {
+            .login-container {
+                flex-direction: column;
+            }
 
-        .loading::after {
-            content: '';
-            display: inline-block;
-            width: 20px;
-            height: 20px;
-            border: 2px solid #6c5ce7;
-            border-radius: 50%;
-            border-top-color: transparent;
-            animation: spin 1s linear infinite;
-        }
+            .login-info {
+                padding: 1rem;
+            }
 
-        @keyframes spin {
-            to { transform: rotate(360deg); }
+            .login-form-container {
+                padding: 1rem;
+            }
+
+            .mascot-image {
+                width: 150px;
+                height: 150px;
+            }
         }
     </style>
 </head>
 <body>
     <div class="login-container">
-        <h1>Jogo das Sílabas</h1>
-        <div class="form-group">
-            <label for="email">Email</label>
-            <input type="email" id="email" required>
+        <div class="login-info">
+            <img src="imagens/imagem-login.png" alt="Mascote do Jogo das Sílabas" class="mascot-image">
+            <h2>Bem-vindo ao Jogo das Sílabas!</h2>
+            <p>Aprenda a formar palavras de forma divertida e interativa.</p>
+            <ul class="features-list">
+                <li>Aprenda a formar palavras arrastando sílabas</li>
+                <li>Progrida através de níveis cada vez mais desafiadores</li>
+                <li>Feedback sonoro e visual para cada acerto</li>
+                <li>Interface intuitiva e amigável para crianças</li>
+                <li>Acompanhamento do progresso de aprendizagem</li>
+            </ul>
+            <p>Comece sua jornada de aprendizado agora!</p>
         </div>
-        <div class="form-group">
-            <label for="senha">Senha</label>
-            <input type="password" id="senha" required>
+
+        <div class="login-form-container">
+            <div class="login-form">
+                <h1>Entrar</h1>
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" placeholder="Seu email">
+                </div>
+                <div class="form-group">
+                    <label for="senha">Senha</label>
+                    <input type="password" id="senha" placeholder="Sua senha">
+                </div>
+                <button class="login-button" onclick="fazerLogin()">Entrar</button>
+                <div class="create-account">
+                    <p>Ainda não tem uma conta?</p>
+                    <a href="#" onclick="mostrarModalCriarConta()">Criar Conta</a>
+                </div>
+            </div>
         </div>
-        <button class="btn-primary" id="btn-login">Entrar</button>
-        <button class="btn-secondary" id="btn-criar-conta">Criar Conta</button>
-        <div class="error-message" id="error-message"></div>
-        <div class="loading" id="loading"></div>
     </div>
 
     <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
-    <script>
-        // Configuração do Supabase
-        const supabaseUrl = 'https://mxiwsqzusurawdifjrmb.supabase.co'
-        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im14aXdzcXp1c3VyYXdkaWZqcm1iIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDIyNDIzMTcsImV4cCI6MjA1NzgxODMxN30.GzwM3674qEbhofC6lEJPbWOxFGFVeofRwQkeE7QgD34'
-        const supabase = window.supabase.createClient(supabaseUrl, supabaseKey)
-
-        // Elementos da interface
-        const btnLogin = document.getElementById('btn-login');
-        const btnCriarConta = document.getElementById('btn-criar-conta');
-        const errorMessage = document.getElementById('error-message');
-        const loading = document.getElementById('loading');
-
-        // Função para mostrar erro
-        function mostrarErro(mensagem) {
-            errorMessage.textContent = mensagem;
-            errorMessage.style.display = 'block';
-        }
-
-        // Função para mostrar loading
-        function mostrarLoading() {
-            loading.style.display = 'block';
-            btnLogin.disabled = true;
-            btnCriarConta.disabled = true;
-        }
-
-        // Função para esconder loading
-        function esconderLoading() {
-            loading.style.display = 'none';
-            btnLogin.disabled = false;
-            btnCriarConta.disabled = false;
-        }
-
-        // Função para fazer login
-        async function fazerLogin() {
-            const email = document.getElementById('email').value;
-            const senha = document.getElementById('senha').value;
-
-            if (!email || !senha) {
-                mostrarErro('Por favor, preencha todos os campos');
-                return;
-            }
-
-            mostrarLoading();
-            errorMessage.style.display = 'none';
-
-            try {
-                const { data, error } = await supabase.auth.signInWithPassword({
-                    email: email,
-                    password: senha
-                });
-
-                if (error) throw error;
-
-                localStorage.setItem('userId', data.user.id);
-                window.location.href = 'jogo.html';
-            } catch (error) {
-                mostrarErro('Erro ao fazer login: ' + error.message);
-            } finally {
-                esconderLoading();
-            }
-        }
-
-        // Função para criar conta
-        async function criarConta() {
-            const email = document.getElementById('email').value;
-            const senha = document.getElementById('senha').value;
-
-            if (!email || !senha) {
-                mostrarErro('Por favor, preencha todos os campos');
-                return;
-            }
-
-            mostrarLoading();
-            errorMessage.style.display = 'none';
-
-            try {
-                // 1. Criar usuário no auth
-                const { data: authData, error: authError } = await supabase.auth.signUp({
-                    email: email,
-                    password: senha
-                });
-
-                if (authError) throw authError;
-
-                // 2. Criar registro na tabela usuarios
-                const { error: dbError } = await supabase
-                    .from('usuarios')
-                    .insert([
-                        {
-                            id: authData.user.id,
-                            is_subscribed: false,
-                            created_at: new Date().toISOString()
-                        }
-                    ]);
-
-                if (dbError) throw dbError;
-
-                localStorage.setItem('userId', authData.user.id);
-                window.location.href = 'jogo.html';
-            } catch (error) {
-                mostrarErro('Erro ao criar conta: ' + error.message);
-            } finally {
-                esconderLoading();
-            }
-        }
-
-        // Eventos dos botões
-        btnLogin.addEventListener('click', fazerLogin);
-        btnCriarConta.addEventListener('click', criarConta);
-
-        // Verificar se já está logado
-        supabase.auth.onAuthStateChange((event, session) => {
-            if (event === 'SIGNED_IN') {
-                window.location.href = 'jogo.html';
-            }
-        });
-    </script>
+    <script src="login.js"></script>
 </body>
 </html> 

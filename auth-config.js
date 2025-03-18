@@ -4,6 +4,19 @@ const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS
 const supabase = window.supabase.createClient(supabaseUrl, supabaseKey)
 
 // Elementos da interface
+const errorMessage = document.createElement('div');
+errorMessage.className = 'error-message';
+errorMessage.style.display = 'none';
+errorMessage.style.color = '#e74c3c';
+errorMessage.style.marginTop = '1rem';
+errorMessage.style.textAlign = 'center';
+
+const loading = document.createElement('div');
+loading.className = 'loading';
+loading.style.display = 'none';
+loading.style.marginTop = '1rem';
+loading.style.textAlign = 'center';
+
 const loginModal = document.createElement('div');
 loginModal.className = 'modal-upgrade';
 loginModal.innerHTML = `
@@ -24,19 +37,48 @@ loginModal.innerHTML = `
 const userEmail = document.getElementById('user-email');
 const btnLogout = document.getElementById('btn-logout');
 
+// Função para mostrar erro
+function mostrarErro(mensagem) {
+    errorMessage.textContent = mensagem;
+    errorMessage.style.display = 'block';
+    setTimeout(() => {
+        errorMessage.style.display = 'none';
+    }, 5000);
+}
+
+// Função para mostrar loading
+function mostrarLoading() {
+    loading.style.display = 'block';
+    document.querySelector('.login-button').disabled = true;
+}
+
+// Função para esconder loading
+function esconderLoading() {
+    loading.style.display = 'none';
+    document.querySelector('.login-button').disabled = false;
+}
+
 // Função para mostrar modal de login
 function mostrarLogin() {
     document.body.appendChild(loginModal);
     
     // Eventos dos botões
     document.getElementById('btn-login').addEventListener('click', fazerLogin);
-    document.getElementById('btn-criar-conta').addEventListener('click', criarConta);
+    document.getElementById('btn-criar-conta').addEventListener('click', mostrarModalCriarConta);
 }
 
 // Função para fazer login
 async function fazerLogin() {
     const email = document.getElementById('email').value;
     const senha = document.getElementById('senha').value;
+
+    if (!email || !senha) {
+        mostrarErro('Por favor, preencha todos os campos');
+        return;
+    }
+
+    mostrarLoading();
+    errorMessage.style.display = 'none';
 
     try {
         const { data, error } = await supabase.auth.signInWithPassword({
@@ -48,31 +90,122 @@ async function fazerLogin() {
 
         localStorage.setItem('userId', data.user.id);
         loginModal.remove();
-        verificarStatusAssinatura(data.user.id);
+        verificarStatusAssinatura(data.user.id).then(nivelConfig => {
+            atualizarInterface(nivelConfig);
+        });
     } catch (error) {
-        alert('Erro ao fazer login: ' + error.message);
+        mostrarErro('Erro ao fazer login: ' + error.message);
+    } finally {
+        esconderLoading();
     }
 }
 
 // Função para criar conta
-async function criarConta() {
-    const email = document.getElementById('email').value;
-    const senha = document.getElementById('senha').value;
+async function criarConta(email, senha) {
+    if (!email || !senha) {
+        mostrarErro('Por favor, preencha todos os campos');
+        return;
+    }
+
+    mostrarLoading();
+    errorMessage.style.display = 'none';
 
     try {
-        const { data, error } = await supabase.auth.signUp({
+        // 1. Criar usuário no auth
+        const { data: authData, error: authError } = await supabase.auth.signUp({
             email: email,
             password: senha
         });
 
-        if (error) throw error;
+        if (authError) throw authError;
 
-        localStorage.setItem('userId', data.user.id);
+        // 2. Criar registro na tabela usuarios
+        const { error: dbError } = await supabase
+            .from('usuarios')
+            .insert([
+                {
+                    id: authData.user.id,
+                    is_subscribed: false,
+                    created_at: new Date().toISOString()
+                }
+            ]);
+
+        if (dbError) throw dbError;
+
+        localStorage.setItem('userId', authData.user.id);
         loginModal.remove();
-        verificarStatusAssinatura(data.user.id);
+        verificarStatusAssinatura(authData.user.id).then(nivelConfig => {
+            atualizarInterface(nivelConfig);
+        });
     } catch (error) {
-        alert('Erro ao criar conta: ' + error.message);
+        mostrarErro('Erro ao criar conta: ' + error.message);
+    } finally {
+        esconderLoading();
     }
+}
+
+// Função para mostrar modal de criar conta
+function mostrarModalCriarConta() {
+    const modal = document.createElement('div');
+    modal.className = 'modal-criar-conta';
+    modal.innerHTML = `
+        <div class="modal-content" style="
+            background: white;
+            padding: 2rem;
+            border-radius: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            max-width: 400px;
+            width: 90%;
+            position: relative;
+        ">
+            <h2 style="
+                color: #333;
+                text-align: center;
+                margin-bottom: 2rem;
+            ">Criar Nova Conta</h2>
+            <div class="form-group">
+                <label for="novo-email">Email</label>
+                <input type="email" id="novo-email" placeholder="Seu email">
+            </div>
+            <div class="form-group">
+                <label for="nova-senha">Senha</label>
+                <input type="password" id="nova-senha" placeholder="Sua senha">
+            </div>
+            <button class="login-button" onclick="confirmarCriarConta()">Criar Conta</button>
+            <button style="
+                background: #f0f0f0;
+                color: #666;
+                margin-top: 1rem;
+                width: 100%;
+                padding: 1rem;
+                border: none;
+                border-radius: 8px;
+                cursor: pointer;
+            " onclick="this.parentElement.parentElement.remove()">Cancelar</button>
+        </div>
+    `;
+    modal.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.5);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 1000;
+    `;
+    document.body.appendChild(modal);
+    document.body.appendChild(errorMessage);
+    document.body.appendChild(loading);
+}
+
+// Função para confirmar criação de conta
+function confirmarCriarConta() {
+    const email = document.getElementById('novo-email').value;
+    const senha = document.getElementById('nova-senha').value;
+    criarConta(email, senha);
 }
 
 // Função para fazer logout

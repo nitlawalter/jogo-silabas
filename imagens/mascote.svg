@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="200" height="200" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+    <!-- Corpo do mascote -->
+    <circle cx="100" cy="100" r="90" fill="#6c5ce7"/>
+    
+    <!-- Olhos -->
+    <circle cx="70" cy="80" r="15" fill="white"/>
+    <circle cx="130" cy="80" r="15" fill="white"/>
+    <circle cx="70" cy="80" r="8" fill="#333"/>
+    <circle cx="130" cy="80" r="8" fill="#333"/>
+    
+    <!-- Sorriso -->
+    <path d="M60,120 Q100,160 140,120" stroke="white" stroke-width="8" fill="none"/>
+    
+    <!-- Detalhes -->
+    <circle cx="70" cy="75" r="4" fill="white"/>
+    <circle cx="130" cy="75" r="4" fill="white"/>
+    
+    <!-- Sílabas flutuantes -->
+    <g transform="rotate(-15,50,40)">
+        <rect x="30" y="30" width="40" height="25" rx="5" fill="#4cd137"/>
+        <text x="35" y="48" fill="white" font-family="Arial" font-size="16">JO</text>
+    </g>
+    
+    <g transform="rotate(15,150,40)">
+        <rect x="130" y="30" width="40" height="25" rx="5" fill="#4cd137"/>
+        <text x="135" y="48" fill="white" font-family="Arial" font-size="16">GO</text>
+    </g>
+</svg> 
