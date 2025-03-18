@@ -7,9 +7,10 @@
     "deploy": "vercel --prod"
   },
   "dependencies": {
+    "@supabase/supabase-js": "^2.49.1",
     "stripe": "^14.17.0"
   },
   "devDependencies": {
     "vercel": "^33.5.1"
   }
-} 
+}

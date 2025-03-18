@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jogo DAS Sílabas</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="icon" href="imagens/favicon.ico" type="image/x-icon">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Jogo das Sílabas</h1>
+            <div class="user-info">
+                <span id="user-email"></span>
+                <button id="btn-logout" class="btn-logout">Sair</button>
+            </div>
+        </div>
+
+        <div id="tela-inicial" class="tela ativa">
+            <div class="capa-container">
+                <img src="imagens/capa.png" alt="Capa do Jogo das Sílabas" class="imagem-capa">
+            </div>
+            <div class="bem-vindo">
+                <h2>Bem-vindo ao Jogo das Sílabas!</h2>
+                <p class="descricao-jogo">Aprenda a formar palavras de forma divertida! Arraste as sílabas para formar palavras corretamente.</p>
+            </div>
+            <h3 class="escolha-nivel">Escolha o nível:</h3>
+            <div class="niveis">
+                <button class="nivel-btn" data-nivel="2">
+                    <i class="fas fa-star"></i> 2 Sílabas
+                </button>
+                <button class="nivel-btn" data-nivel="3">
+                    <i class="fas fa-star"></i><i class="fas fa-star"></i> 3 Sílabas
+                </button>
+                <button class="nivel-btn" data-nivel="4">
+                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i> 4 Sílabas
+                </button>
+            </div>
+        </div>
+
+        <div id="tela-jogo" class="tela">
+            <div class="pontuacao">
+                <span id="acertos">Acertos: 0</span>
+                <span id="nivel-atual">Nível: 2 Sílabas</span>
+            </div>
+            
+            <div class="area-jogo">
+                <div class="imagem-container">
+                    <img id="imagem-palavra" src="" alt="Imagem da palavra">
+                </div>
+                
+                <div class="palavra-oculta-container">
+                    <div id="palavra-oculta" class="palavra-oculta">?????</div>
+                    <button id="toggle-palavra" class="toggle-palavra" title="Mostrar/Ocultar palavra">
+                        <i class="fas fa-eye"></i>
+                    </button>
+                </div>
+                
+                <div class="area-resposta" id="area-resposta">
+                    <!-- Aqui serão adicionados os espaços para as sílabas -->
+                </div>
+                
+                <div class="silabas-container" id="silabas-container">
+                    <!-- Aqui serão adicionadas as sílabas embaralhadas -->
+                </div>
+            </div>
+            
+            <div class="controles">
+                <button id="verificar-btn">Verificar</button>
+                <button id="limpar-btn">Limpar</button>
+                <button id="proxima-btn" disabled>Próxima Palavra</button>
+                <button id="voltar-btn">Voltar ao Menu</button>
+                <button id="botao-som" class="botao-controle" title="Ativar/Desativar Som">
+                    🔊
+                </button>
+                <button id="botao-dica" class="botao-controle" title="Mostrar Dica">
+                    💡
+                </button>
+                <button id="botao-reiniciar" class="botao-controle" title="Reiniciar Nível">
+                    🔄
+                </button>
+            </div>
+        </div>
+
+        <div id="tela-feedback" class="tela">
+            <div id="feedback-mensagem"></div>
+            <div id="feedback-conteudo">
+                <div id="feedback-imagem"></div>
+                <div id="imagem-nivel-completo" class="imagem-nivel-completo">
+                    <img src="imagens/nivel-completo.png" alt="Nível Completo">
+                    <canvas id="canvas-nivel-completo" width="200" height="200" style="display: none;"></canvas>
+                </div>
+            </div>
+            <button id="continuar-btn">Continuar</button>
+        </div>
+    </div>
+
+    <footer>
+        <p>Jogo Educativo de Sílabas - Desenvolvido para ajudar crianças a aprender</p>
+    </footer>
+
+    <audio id="som-acerto" src="sons/acerto.wav" preload="auto"></audio>
+    <audio id="som-erro" src="sons/erro.wav" preload="auto"></audio>
+
+    <script src="script.js"></script>
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+    <script src="auth-config.js"></script>
+    <script src="stripe-config.js"></script>
+    <script src="assinatura-config.js"></script>
+</body>
+</html> 

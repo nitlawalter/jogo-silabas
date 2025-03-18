@@ -3,95 +3,246 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Jogo DAS Sílabas</title>
-    <link rel="stylesheet" href="styles.css">
-    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <link rel="icon" href="imagens/favicon.ico" type="image/x-icon">
+    <title>Login - Jogo das Sílabas</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #6c5ce7, #a363d9);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .login-container {
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            width: 90%;
+            max-width: 400px;
+            text-align: center;
+        }
+
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 2rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+            text-align: left;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #2c3e50;
+        }
+
+        input {
+            width: 100%;
+            padding: 0.8rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+
+        input:focus {
+            border-color: #6c5ce7;
+            outline: none;
+        }
+
+        button {
+            width: 100%;
+            padding: 1rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 1rem;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #6c5ce7, #a363d9);
+            color: white;
+        }
+
+        .btn-secondary {
+            background: #f0f0f0;
+            color: #666;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .error-message {
+            color: #e74c3c;
+            margin-top: 1rem;
+            display: none;
+        }
+
+        .loading {
+            display: none;
+            margin-top: 1rem;
+        }
+
+        .loading::after {
+            content: '';
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 2px solid #6c5ce7;
+            border-radius: 50%;
+            border-top-color: transparent;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
 </head>
 <body>
-    <div class="container">
-        <header>
-            <h1>JOGO DAS SÍLABAS</h1>
-        </header>
-
-        <div id="tela-inicial" class="tela ativa">
-            <div class="capa-container">
-                <img src="imagens/capa.png" alt="Capa do Jogo das Sílabas" class="imagem-capa">
-            </div>
-            <div class="bem-vindo">
-                <h2>Bem-vindo ao Jogo das Sílabas!</h2>
-                <p class="descricao-jogo">Aprenda a formar palavras de forma divertida! Arraste as sílabas para formar palavras corretamente.</p>
-            </div>
-            <h3 class="escolha-nivel">Escolha o nível:</h3>
-            <div class="niveis">
-                <button class="nivel-btn" data-nivel="2">
-                    <i class="fas fa-star"></i> 2 Sílabas
-                </button>
-                <button class="nivel-btn" data-nivel="3">
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i> 3 Sílabas
-                </button>
-                <button class="nivel-btn" data-nivel="4">
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i> 4 Sílabas
-                </button>
-            </div>
+    <div class="login-container">
+        <h1>Jogo das Sílabas</h1>
+        <div class="form-group">
+            <label for="email">Email</label>
+            <input type="email" id="email" required>
         </div>
-
-        <div id="tela-jogo" class="tela">
-            <div class="pontuacao">
-                <span id="acertos">Acertos: 0</span>
-                <span id="nivel-atual">Nível: 2 Sílabas</span>
-            </div>
-            
-            <div class="area-jogo">
-                <div class="imagem-container">
-                    <img id="imagem-palavra" src="" alt="Imagem da palavra">
-                </div>
-                
-                <div class="palavra-oculta-container">
-                    <div id="palavra-oculta" class="palavra-oculta">?????</div>
-                    <button id="toggle-palavra" class="toggle-palavra" title="Mostrar/Ocultar palavra">
-                        <i class="fas fa-eye"></i>
-                    </button>
-                </div>
-                
-                <div class="area-resposta" id="area-resposta">
-                    <!-- Aqui serão adicionados os espaços para as sílabas -->
-                </div>
-                
-                <div class="silabas-container" id="silabas-container">
-                    <!-- Aqui serão adicionadas as sílabas embaralhadas -->
-                </div>
-            </div>
-            
-            <div class="controles">
-                <button id="verificar-btn">Verificar</button>
-                <button id="limpar-btn">Limpar</button>
-                <button id="proxima-btn" disabled>Próxima Palavra</button>
-                <button id="voltar-btn">Voltar ao Menu</button>
-            </div>
+        <div class="form-group">
+            <label for="senha">Senha</label>
+            <input type="password" id="senha" required>
         </div>
-
-        <div id="tela-feedback" class="tela">
-            <div id="feedback-mensagem"></div>
-            <div id="feedback-conteudo">
-                <div id="feedback-imagem"></div>
-                <div id="imagem-nivel-completo" class="imagem-nivel-completo">
-                    <img src="imagens/nivel-completo.png" alt="Nível Completo">
-                    <canvas id="canvas-nivel-completo" width="200" height="200" style="display: none;"></canvas>
-                </div>
-            </div>
-            <button id="continuar-btn">Continuar</button>
-        </div>
+        <button class="btn-primary" id="btn-login">Entrar</button>
+        <button class="btn-secondary" id="btn-criar-conta">Criar Conta</button>
+        <div class="error-message" id="error-message"></div>
+        <div class="loading" id="loading"></div>
     </div>
 
-    <footer>
-        <p>Jogo Educativo de Sílabas - Desenvolvido para ajudar crianças a aprender</p>
-    </footer>
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+    <script>
+        // Configuração do Supabase
+        const supabaseUrl = 'https://mxiwsqzusurawdifjrmb.supabase.co'
+        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im14aXdzcXp1c3VyYXdkaWZqcm1iIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDIyNDIzMTcsImV4cCI6MjA1NzgxODMxN30.GzwM3674qEbhofC6lEJPbWOxFGFVeofRwQkeE7QgD34'
+        const supabase = window.supabase.createClient(supabaseUrl, supabaseKey)
 
-    <audio id="som-acerto" src="sons/acerto.wav" preload="auto"></audio>
-    <audio id="som-erro" src="sons/erro.wav" preload="auto"></audio>
+        // Elementos da interface
+        const btnLogin = document.getElementById('btn-login');
+        const btnCriarConta = document.getElementById('btn-criar-conta');
+        const errorMessage = document.getElementById('error-message');
+        const loading = document.getElementById('loading');
 
-    <script src="script.js"></script>
+        // Função para mostrar erro
+        function mostrarErro(mensagem) {
+            errorMessage.textContent = mensagem;
+            errorMessage.style.display = 'block';
+        }
+
+        // Função para mostrar loading
+        function mostrarLoading() {
+            loading.style.display = 'block';
+            btnLogin.disabled = true;
+            btnCriarConta.disabled = true;
+        }
+
+        // Função para esconder loading
+        function esconderLoading() {
+            loading.style.display = 'none';
+            btnLogin.disabled = false;
+            btnCriarConta.disabled = false;
+        }
+
+        // Função para fazer login
+        async function fazerLogin() {
+            const email = document.getElementById('email').value;
+            const senha = document.getElementById('senha').value;
+
+            if (!email || !senha) {
+                mostrarErro('Por favor, preencha todos os campos');
+                return;
+            }
+
+            mostrarLoading();
+            errorMessage.style.display = 'none';
+
+            try {
+                const { data, error } = await supabase.auth.signInWithPassword({
+                    email: email,
+                    password: senha
+                });
+
+                if (error) throw error;
+
+                localStorage.setItem('userId', data.user.id);
+                window.location.href = 'jogo.html';
+            } catch (error) {
+                mostrarErro('Erro ao fazer login: ' + error.message);
+            } finally {
+                esconderLoading();
+            }
+        }
+
+        // Função para criar conta
+        async function criarConta() {
+            const email = document.getElementById('email').value;
+            const senha = document.getElementById('senha').value;
+
+            if (!email || !senha) {
+                mostrarErro('Por favor, preencha todos os campos');
+                return;
+            }
+
+            mostrarLoading();
+            errorMessage.style.display = 'none';
+
+            try {
+                // 1. Criar usuário no auth
+                const { data: authData, error: authError } = await supabase.auth.signUp({
+                    email: email,
+                    password: senha
+                });
+
+                if (authError) throw authError;
+
+                // 2. Criar registro na tabela usuarios
+                const { error: dbError } = await supabase
+                    .from('usuarios')
+                    .insert([
+                        {
+                            id: authData.user.id,
+                            is_subscribed: false,
+                            created_at: new Date().toISOString()
+                        }
+                    ]);
+
+                if (dbError) throw dbError;
+
+                localStorage.setItem('userId', authData.user.id);
+                window.location.href = 'jogo.html';
+            } catch (error) {
+                mostrarErro('Erro ao criar conta: ' + error.message);
+            } finally {
+                esconderLoading();
+            }
+        }
+
+        // Eventos dos botões
+        btnLogin.addEventListener('click', fazerLogin);
+        btnCriarConta.addEventListener('click', criarConta);
+
+        // Verificar se já está logado
+        supabase.auth.onAuthStateChange((event, session) => {
+            if (event === 'SIGNED_IN') {
+                window.location.href = 'jogo.html';
+            }
+        });
+    </script>
 </body>
 </html> 
