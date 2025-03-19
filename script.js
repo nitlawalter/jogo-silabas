@@ -183,6 +183,9 @@ function iniciarNivel(nivel) {
     // Mudar para a tela de jogo
     mudarTela(telaJogo);
     
+    // Iniciar sessão de progresso
+    iniciarNovoNivel(nivel);
+    
     // Carregar primeira palavra
     carregarNovaPalavra();
 }
@@ -194,6 +197,9 @@ function carregarNovaPalavra() {
     // Resetar estado da palavra revelada
     estadoJogo.palavraRevelada = false;
     atualizarVisualizacaoPalavra();
+    
+    // Iniciar nova tentativa para registro de progresso
+    iniciarNovaPalavra();
     
     // Obter palavras disponíveis para o nível atual
     const palavrasDisponiveis = bancoPalavras[estadoJogo.nivelAtual].filter(
@@ -377,21 +383,30 @@ function limparAreaResposta() {
 }
 
 function verificarResposta() {
-    const espacos = document.querySelectorAll('.espaco-silaba');
-    const respostaUsuario = Array.from(espacos)
-        .map(espaco => espaco.firstChild?.textContent || '')
-        .join('');
-    
-    const respostaCorreta = respostaUsuario === estadoJogo.palavraAtual.palavra;
-    
-    if (respostaCorreta) {
+    const silabasColocadas = Array.from(areaResposta.children)
+        .map(espaco => espaco.textContent)
+        .filter(silaba => silaba !== '');
+
+    if (silabasColocadas.length !== estadoJogo.palavraAtual.silabas.length) {
+        mostrarFeedback("Complete todas as sílabas!", "❌");
+        if (estadoJogo.somAtivo) tocarSom(somErro);
+        return;
+    }
+
+    const palavraFormada = silabasColocadas.join('');
+    const correto = palavraFormada === estadoJogo.palavraAtual.palavra;
+
+    // Registrar tentativa no progresso
+    verificarTentativa(estadoJogo.palavraAtual.palavra, correto);
+
+    if (correto) {
         estadoJogo.acertos++;
         acertosSpan.textContent = `Acertos: ${estadoJogo.acertos}`;
         
         // Tocar som de acerto
         tocarSom('acerto');
         
-        espacos.forEach(espaco => {
+        Array.from(areaResposta.children).forEach(espaco => {
             espaco.firstChild.classList.add('animacao-acerto');
         });
         
@@ -408,7 +423,7 @@ function verificarResposta() {
         
         mostrarFeedback("Ops! Tente novamente!", "😕");
         
-        Array.from(espacos).forEach(espaco => {
+        Array.from(areaResposta.children).forEach(espaco => {
             if (espaco.firstChild) {
                 const silaba = espaco.firstChild;
                 espaco.classList.remove('preenchido');

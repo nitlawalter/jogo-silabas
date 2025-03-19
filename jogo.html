@@ -15,8 +15,9 @@
             <h1>Jogo das Sílabas</h1>
             <div class="user-info">
                 <span id="user-email"></span>
-                <span class="plano-badge" id="plano-badge">Plano: Carregando...</span>
-                <button id="btn-logout" class="btn-logout">Sair</button>
+                <span id="plano-badge"></span>
+                <button onclick="window.location.href='progresso.html'" class="btn-progresso">Ver Progresso</button>
+                <button onclick="fazerLogout()" class="btn-logout">Sair</button>
             </div>
         </div>
 
@@ -119,5 +120,6 @@
     <script src="auth-config.js"></script>
     <script src="stripe-config.js"></script>
     <script src="assinatura-config.js"></script>
+    <script src="jogo-progresso.js"></script>
 </body>
 </html> 

@@ -899,4 +899,20 @@ button:disabled {
     .plano-badge {
         margin: 0.5rem 0;
     }
+}
+
+.btn-progresso {
+    background: #6c5ce7;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 0.9em;
+    margin-right: 10px;
+    transition: background-color 0.3s;
+}
+
+.btn-progresso:hover {
+    background: #5f50e6;
 } 

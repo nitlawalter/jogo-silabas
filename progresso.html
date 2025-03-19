@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Progresso - Jogo das Sílabas</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: #f5f6fa;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            color: #2d3436;
+            margin: 0;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .stat-card h3 {
+            margin: 0 0 10px 0;
+            color: #636e72;
+            font-size: 0.9em;
+            text-transform: uppercase;
+        }
+
+        .stat-card p {
+            margin: 0;
+            font-size: 1.8em;
+            font-weight: bold;
+            color: #2d3436;
+        }
+
+        .charts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .chart-container {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .btn-voltar {
+            background: #6c5ce7;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+        }
+
+        .btn-voltar:hover {
+            background: #5f50e6;
+        }
+
+        @media (max-width: 768px) {
+            .charts-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Progresso do Aprendizado</h1>
+            <button class="btn-voltar" onclick="window.location.href='jogo.html'">Voltar ao Jogo</button>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <h3>Total de Sessões</h3>
+                <p id="total-sessoes">-</p>
+            </div>
+            <div class="stat-card">
+                <h3>Taxa de Acerto</h3>
+                <p id="taxa-acerto">-</p>
+            </div>
+            <div class="stat-card">
+                <h3>Nível Atual</h3>
+                <p id="nivel-atual">-</p>
+            </div>
+            <div class="stat-card">
+                <h3>Tempo Médio por Palavra</h3>
+                <p id="tempo-medio">-</p>
+            </div>
+        </div>
+
+        <div class="charts-grid">
+            <div class="chart-container">
+                <canvas id="progressoChart"></canvas>
+            </div>
+            <div class="chart-container">
+                <canvas id="acertosChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Configuração do Supabase
+        const supabaseUrl = 'https://mxiwsqzusurawdifjrmb.supabase.co';
+        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im14aXdzcXp1c3VyYXdkaWZqcm1iIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDIyNDIzMTcsImV4cCI6MjA1NzgxODMxN30.GzwM3674qEbhofC6lEJPbWOxFGFVeofRwQkeE7QgD34';
+        const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+
+        async function carregarProgresso() {
+            const { data: { session } } = await supabase.auth.getSession();
+            if (!session) {
+                window.location.href = 'index.html';
+                return;
+            }
+
+            // Carregar dados do progresso
+            const { data: progresso, error } = await supabase
+                .rpc('obter_progresso_usuario', {
+                    p_user_id: session.user.id
+                });
+
+            if (error) {
+                console.error('Erro ao carregar progresso:', error);
+                return;
+            }
+
+            if (progresso && progresso.length > 0) {
+                // Atualizar cards de estatísticas
+                document.getElementById('total-sessoes').textContent = progresso.reduce((sum, p) => sum + p.total_sessoes, 0);
+                
+                const totalAcertos = progresso.reduce((sum, p) => sum + p.total_acertos, 0);
+                const totalTentativas = progresso.reduce((sum, p) => sum + p.total_tentativas, 0);
+                const taxaAcerto = totalTentativas > 0 ? ((totalAcertos / totalTentativas) * 100).toFixed(1) + '%' : '0%';
+                document.getElementById('taxa-acerto').textContent = taxaAcerto;
+
+                const nivelAtual = Math.max(...progresso.map(p => p.nivel));
+                document.getElementById('nivel-atual').textContent = nivelAtual;
+
+                const tempoMedio = progresso.reduce((sum, p) => sum + p.tempo_medio_por_palavra, 0) / progresso.length;
+                document.getElementById('tempo-medio').textContent = tempoMedio.toFixed(1) + 's';
+
+                // Criar gráfico de progresso
+                new Chart(document.getElementById('progressoChart'), {
+                    type: 'line',
+                    data: {
+                        labels: progresso.map(p => `Nível ${p.nivel}`),
+                        datasets: [{
+                            label: 'Tempo Médio por Palavra (segundos)',
+                            data: progresso.map(p => p.tempo_medio_por_palavra),
+                            borderColor: '#6c5ce7',
+                            tension: 0.1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            title: {
+                                display: true,
+                                text: 'Evolução do Tempo de Resposta'
+                            }
+                        }
+                    }
+                });
+
+                // Criar gráfico de acertos
+                new Chart(document.getElementById('acertosChart'), {
+                    type: 'bar',
+                    data: {
+                        labels: progresso.map(p => `Nível ${p.nivel}`),
+                        datasets: [{
+                            label: 'Taxa de Acerto (%)',
+                            data: progresso.map(p => (p.total_acertos / p.total_tentativas * 100) || 0),
+                            backgroundColor: '#6c5ce7'
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            title: {
+                                display: true,
+                                text: 'Taxa de Acerto por Nível'
+                            }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                max: 100
+                            }
+                        }
+                    }
+                });
+            }
+        }
+
+        // Carregar dados quando a página carregar
+        document.addEventListener('DOMContentLoaded', carregarProgresso);
+    </script>
+</body>
+</html> 
