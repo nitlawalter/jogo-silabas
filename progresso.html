@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Progresso - Jogo das Sílabas</title>
+    <link rel="icon" href="imagens/favicon.ico" type="image/x-icon">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
     <style>
@@ -87,7 +88,97 @@
             background: #5f50e6;
         }
 
+        /* Estilos para a tabela de histórico */
+        .card {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+
+        .card-header {
+            padding: 20px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .card-header h3 {
+            margin: 0;
+            color: #2d3436;
+            font-size: 1.2em;
+        }
+
+        .card-body {
+            padding: 0;
+        }
+
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .table th {
+            background-color: #f8f9fa;
+            color: #636e72;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.85em;
+            padding: 15px;
+            text-align: left;
+            border-bottom: 2px solid #eee;
+        }
+
+        .table td {
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+            color: #2d3436;
+            font-size: 0.95em;
+        }
+
+        .table tr:hover {
+            background-color: #f8f9fa;
+        }
+
+        .table-warning {
+            background-color: #fff3cd !important;
+        }
+
+        .table-warning:hover {
+            background-color: #ffeeba !important;
+        }
+
+        .badge {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-weight: 500;
+            font-size: 0.85em;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .bg-success {
+            background-color: #28a745 !important;
+            color: white;
+        }
+
+        .bg-danger {
+            background-color: #dc3545 !important;
+            color: white;
+        }
+
+        /* Responsividade da tabela */
         @media (max-width: 768px) {
+            .table-responsive {
+                display: block;
+                width: 100%;
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+            }
+
+            .table th,
+            .table td {
+                white-space: nowrap;
+            }
+
             .charts-grid {
                 grid-template-columns: 1fr;
             }
@@ -128,6 +219,35 @@
                 <canvas id="acertosChart"></canvas>
             </div>
         </div>
+
+        <div class="row mt-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Histórico de Palavras</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Palavra</th>
+                                        <th>Nível</th>
+                                        <th>Status</th>
+                                        <th>Tentativas</th>
+                                        <th>Tempo Gasto</th>
+                                        <th>Data</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="historico-palavras">
+                                    <!-- Será preenchido via JavaScript -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
     <script>
@@ -136,7 +256,10 @@
         const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im14aXdzcXp1c3VyYXdkaWZqcm1iIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDIyNDIzMTcsImV4cCI6MjA1NzgxODMxN30.GzwM3674qEbhofC6lEJPbWOxFGFVeofRwQkeE7QgD34';
         const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
 
-        async function carregarProgresso() {
+        let progressoChart = null;
+        let acertosChart = null;
+
+        async function carregarDados() {
             const { data: { session } } = await supabase.auth.getSession();
             if (!session) {
                 window.location.href = 'index.html';
@@ -169,8 +292,12 @@
                 const tempoMedio = progresso.reduce((sum, p) => sum + p.tempo_medio_por_palavra, 0) / progresso.length;
                 document.getElementById('tempo-medio').textContent = tempoMedio.toFixed(1) + 's';
 
+                // Destruir gráficos existentes se houver
+                if (progressoChart) progressoChart.destroy();
+                if (acertosChart) acertosChart.destroy();
+
                 // Criar gráfico de progresso
-                new Chart(document.getElementById('progressoChart'), {
+                progressoChart = new Chart(document.getElementById('progressoChart'), {
                     type: 'line',
                     data: {
                         labels: progresso.map(p => `Nível ${p.nivel}`),
@@ -193,7 +320,7 @@
                 });
 
                 // Criar gráfico de acertos
-                new Chart(document.getElementById('acertosChart'), {
+                acertosChart = new Chart(document.getElementById('acertosChart'), {
                     type: 'bar',
                     data: {
                         labels: progresso.map(p => `Nível ${p.nivel}`),
@@ -223,7 +350,8 @@
         }
 
         // Carregar dados quando a página carregar
-        document.addEventListener('DOMContentLoaded', carregarProgresso);
+        document.addEventListener('DOMContentLoaded', carregarDados);
     </script>
+    <script src="progresso.js"></script>
 </body>
 </html> 
