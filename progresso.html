@@ -94,11 +94,14 @@
             border-radius: 10px;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
             margin-bottom: 30px;
+            min-height: 400px;
+            height: calc(100vh - 500px); /* Altura dinâmica baseada na viewport */
         }
 
         .card-header {
             padding: 20px;
             border-bottom: 1px solid #eee;
+            flex-shrink: 0;
         }
 
         .card-header h3 {
@@ -109,11 +112,32 @@
 
         .card-body {
             padding: 0;
+            height: calc(100% - 60px); /* Altura total menos o header */
+            overflow: hidden;
+            position: relative;
+        }
+
+        .table-responsive {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            overflow-y: auto;
+            overflow-x: hidden;
         }
 
         .table {
             width: 100%;
             border-collapse: collapse;
+            margin-bottom: 0;
+        }
+
+        .table thead {
+            position: sticky;
+            top: 0;
+            z-index: 1;
+            background-color: #f8f9fa;
         }
 
         .table th {
@@ -134,8 +158,32 @@
             font-size: 0.95em;
         }
 
+        .table tbody tr:last-child td {
+            border-bottom: none;
+        }
+
         .table tr:hover {
             background-color: #f8f9fa;
+        }
+
+        /* Estilização da barra de rolagem */
+        .table-responsive::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        .table-responsive::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 4px;
+        }
+
+        .table-responsive::-webkit-scrollbar-thumb {
+            background: #c1c1c1;
+            border-radius: 4px;
+        }
+
+        .table-responsive::-webkit-scrollbar-thumb:hover {
+            background: #a8a8a8;
         }
 
         .table-warning {
@@ -167,11 +215,12 @@
 
         /* Responsividade da tabela */
         @media (max-width: 768px) {
+            .card {
+                height: 400px; /* Altura menor para dispositivos móveis */
+            }
+
             .table-responsive {
-                display: block;
-                width: 100%;
                 overflow-x: auto;
-                -webkit-overflow-scrolling: touch;
             }
 
             .table th,

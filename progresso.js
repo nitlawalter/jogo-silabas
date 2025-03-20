@@ -6,6 +6,7 @@ async function carregarHistoricoPalavras() {
             return;
         }
 
+        // Consulta modificada para garantir que retorne todos os registros
         const { data: tentativas, error } = await supabase
             .from('tentativas')
             .select(`
@@ -15,32 +16,34 @@ async function carregarHistoricoPalavras() {
                 tempo_gasto,
                 created_at,
                 sessoes_jogo!inner (
-                    nivel
+                    nivel,
+                    user_id
                 )
             `)
             .eq('sessoes_jogo.user_id', session.user.id)
             .order('created_at', { ascending: false });
 
-        if (error) throw error;
+        if (error) {
+            console.error('Erro na consulta:', error);
+            return;
+        }
+
+        console.log('Total de tentativas recuperadas:', tentativas?.length || 0);
 
         const tbody = document.getElementById('historico-palavras');
         tbody.innerHTML = '';
 
-        // Agrupar tentativas por palavra para mostrar apenas a última tentativa de cada palavra
-        const palavrasUnicas = {};
-        tentativas.forEach(tentativa => {
-            if (!palavrasUnicas[tentativa.palavra] || 
-                tentativa.created_at > palavrasUnicas[tentativa.palavra].created_at) {
-                palavrasUnicas[tentativa.palavra] = tentativa;
-            }
-        });
+        if (!tentativas || tentativas.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="6" style="text-align: center;">Nenhum registro encontrado</td></tr>';
+            return;
+        }
 
-        Object.values(palavrasUnicas).forEach(tentativa => {
+        tentativas.forEach(tentativa => {
             const row = document.createElement('tr');
             const data = new Date(tentativa.created_at).toLocaleDateString('pt-BR');
             const status = tentativa.acertou ? 
-                '<span class="badge bg-success">Acertou</span>' : 
-                '<span class="badge bg-danger">Errou</span>';
+                '<span class="badge bg-success">ACERTOU</span>' : 
+                '<span class="badge bg-danger">ERROU</span>';
             
             row.innerHTML = `
                 <td>${tentativa.palavra}</td>
@@ -61,10 +64,10 @@ async function carregarHistoricoPalavras() {
 
     } catch (error) {
         console.error('Erro ao carregar histórico:', error);
+        const tbody = document.getElementById('historico-palavras');
+        tbody.innerHTML = '<tr><td colspan="6" style="text-align: center;">Erro ao carregar os dados</td></tr>';
     }
 }
 
 // Adicionar chamada à função de carregamento do histórico
-document.addEventListener('DOMContentLoaded', () => {
-    carregarHistoricoPalavras();
-}); 
+document.addEventListener('DOMContentLoaded', carregarHistoricoPalavras); 
